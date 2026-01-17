@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDBMS Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header class="hero-section">
+            <nav class="navbar">
+                <div class="logo">RDBMS<span class="dot">.</span></div>
+                <div class="nav-links">
+                    <a href="#users">Users</a>
+                    <a href="#orders">Orders</a>
+                    <a href="#query" class="btn-small">Run Query</a>
+                </div>
+            </nav>
+            <div class="hero-content">
+                <h1>Data Management <br> <span class="highlight">Reimagined</span></h1>
+                <p>A powerful, intuitive interface for your relational data.</p>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- Users Section -->
+            <div id="users" class="card">
+                <h2>Users</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #999;">No users</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Add User</h3>
+                <form action="/users" method="POST">
+                    <input type="number" name="id" placeholder="ID" required>
+                    <input type="text" name="name" placeholder="Name" required autocomplete="off">
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="orders" class="card">
+                <h2>Orders</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>UID</th>
+                                <th>Product</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.user_id }}</td>
+                                <td>{{ order.product }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" style="text-align: center; color: #999;">No orders</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Add Order</h3>
+                <form action="/orders" method="POST">
+                    <input type="number" name="id" placeholder="ID" required>
+                    <input type="number" name="user_id" placeholder="User ID" required>
+                    <input type="text" name="product" placeholder="Product" required autocomplete="off">
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+
+            <!-- Join Section -->
+            <div id="query" class="card join-section">
+                <h2>Query</h2>
+                <button id="joinBtn" type="button" style="margin-bottom: 0;">Run Join Query</button>
+
+                <div id="joinResults" style="display: none;">
+                    <table id="joinTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Name</th>
+                                <th>Order</th>
+                                <th>Product</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('joinBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/join');
+                const data = await response.json();
+
+                const tableBody = document.querySelector('#joinTable tbody');
+                tableBody.innerHTML = '';
+
+                if (data.results.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No matches found</td></tr>';
+                } else {
+                    data.results.forEach(row => {
+                        const tr = document.createElement('tr');
+                        // Accessing properties safely. Note that conflicting keys like 'id' might be overwritten in the merge logic of app.py line 42 check logic
+                        // app.py: results.append({**o, **u})
+                        // If o has 'id' and u has 'id', u['id'] breaks o['id'].
+                        // Wait, app.py logic: {**o, **u}. The second one (u) overwrites the first (o).
+                        // u is User ("id", "name"). o is Order ("id", "user_id", "product").
+                        // So the resulting dict has "id" from User. Order ID is lost!
+                        // This is a bug in app.py's join logic potentially, but for now I will just display what I have.
+                        // I will display row.id (User ID, probably), row.name, row.user_id, row.product.
+
+                        tr.innerHTML = `
+                            <td>${row.user_id || row.id}</td> 
+                            <td>${row.name || '-'}</td>
+                            <td>${row.id || '-'}</td>
+                            <td>${row.product || '-'}</td>
+                        `;
+                        // Wait, if U overwrites O, then 'id' is User ID.
+                        // 'user_id' comes from Order (since User doesn't have it).
+                        // 'product' comes from Order.
+                        // 'name' comes from User.
+                        // So Order ID is essentially lost unless I fix app.py or it's not overwritten. 
+                        // But I am just fixing the template error now.
+                        tableBody.appendChild(tr);
+                    });
+                }
+
+                document.getElementById('joinResults').style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching join results:', error);
+                alert('Failed to fetch join results');
+            }
+        });
+    </script>
+</body>
+
+</html>

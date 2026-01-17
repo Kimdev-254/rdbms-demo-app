@@ -1,0 +1,290 @@
+:root {
+    /* Color Palette */
+    --primary-yellow: #FFDE59;
+    --primary-yellow-hover: #FADB48;
+    --text-main: #111111;
+    --text-secondary: #555555;
+    --bg-page: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --bg-input: #F7F7F7;
+    --border-light: #E5E5E5;
+    --border-focus: #111111;
+
+    /* Typography - Scaled Down */
+    --font-heading: 'Outfit', -apple-system, sans-serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    margin: 0;
+    line-height: 1.4;
+    /* Tighter line height */
+    height: 100vh;
+    /* Force full viewport height */
+    overflow: hidden;
+    /* Prevent scrolling if possible */
+    font-size: 14px;
+    /* Smaller base font */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Layout */
+.page-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    /* Compact navbar */
+    border-bottom: 1px solid var(--border-light);
+}
+
+.logo {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+}
+
+.dot {
+    color: var(--primary-yellow);
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.btn-small {
+    background-color: var(--primary-yellow);
+    padding: 0.4rem 0.8rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-small:hover {
+    transform: translateY(-1px);
+}
+
+/* Hero Section - Compact */
+.hero-section {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 1rem;
+    background: radial-gradient(circle at 50% 50%, #FFFAEB 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+h1 {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    /* Much smaller */
+    margin: 0 0 0.25rem 0;
+    font-weight: 800;
+}
+
+.hero-content p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.highlight {
+    position: relative;
+    z-index: 1;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    /* Thinner highlight */
+    background-color: var(--primary-yellow);
+    z-index: -1;
+    opacity: 0.6;
+}
+
+/* Main Content - Grid */
+.container {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 100%;
+    /* Use full width */
+    padding: 1rem;
+    display: grid;
+    /* 3 columns by default to fit everything horizontally */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    overflow-y: auto;
+    /* Scroll inside container if absolutely needed on small screens */
+}
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1rem;
+    /* Compact padding */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    /* Ensure the card takes height but doesn't overflow unnecessarily */
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.card:hover {
+    border-color: var(--primary-yellow);
+}
+
+h2 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin: 0 0 1rem 0;
+}
+
+h3 {
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem 0;
+}
+
+/* Scrollable Table Area */
+.table-wrapper {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+th,
+td {
+    padding: 0.5rem 0.75rem;
+    /* Compact cells */
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+th {
+    background-color: #fafafa;
+    position: sticky;
+    top: 0;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+/* Forms - Compact */
+form {
+    flex: 0 0 auto;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+label {
+    display: none;
+    /* Hide labels to save space, rely on placeholders if possible, or keep small */
+}
+
+input {
+    width: 100%;
+    padding: 0.6rem;
+    background-color: var(--bg-input);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+input:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: var(--border-focus);
+}
+
+button {
+    width: 100%;
+    padding: 0.6rem;
+    background-color: var(--text-main);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #333;
+}
+
+/* Query Section specific */
+.join-section {
+    /* If we want it to span, we can, but 3 cols is better for "one view" */
+    text-align: center;
+    background-color: #FAFAFA;
+}
+
+#joinResults {
+    margin-top: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    flex: 1;
+    /* Take remaining space */
+    overflow-y: auto;
+    padding: 0;
+}
+
+#joinResults table {
+    margin: 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 1024px) {
+    .container {
+        grid-template-columns: 1fr 1fr;
+        /* 2 cols */
+    }
+
+    .join-section {
+        grid-column: 1 / -1;
+        /* Span full width on bottom */
+    }
+}
